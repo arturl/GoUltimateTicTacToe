@@ -60,7 +60,7 @@ func GetSmallCorner(b *board, prev position) (*corner, byte, int) {
 		 position{'c',9}, position{'f',9}, position{'i',9}:
 		return &b.SW, 6, 6
 	}
-	return &b.SW, 0, 0 // error
+	panic(fmt.Sprintf("prev value bad: %c%d", prev.x, prev.y))
 }
 
 type positionDelta struct {

@@ -198,7 +198,7 @@ func (b *board) GetPtr(x byte, y int) *BoardValue {
 			return &b.SE.SE;
 		}
 	default:
-		fmt.Println("error")
+		panic(fmt.Sprintf("Bad coordinates: %c%d", x, y))
 	}
 	return &b.NW.NW
 }

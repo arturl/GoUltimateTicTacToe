@@ -39,33 +39,35 @@ type board struct {
 	SE corner
 }
 
+func (b *board) clone () board {
+	b2 := board{}
+	b2 = *b
+	return b2
+}
+
 type position struct {
 	x byte
 	y int
 }
 
-func IsGameWon(b *board, v BoardValue) bool {
-	// Diagonals:
-	if b.NW.Captured == v && b.C.Captured == v && b.SE.Captured == v { return true }
-	if b.SW.Captured == v && b.C.Captured == v && b.NE.Captured == v { return true }
-
-	// Horizontals:
-	if b.NW.Captured == v && b.N.Captured == v && b.NE.Captured == v { return true }
-	if b.W.Captured  == v && b.C.Captured == v && b.E.Captured  == v { return true }
-	if b.SW.Captured == v && b.S.Captured == v && b.SE.Captured == v { return true }
-
-	// Verticals:
-	if b.NW.Captured == v && b.W.Captured == v && b.SW.Captured == v { return true }
-	if b.N.Captured  == v && b.C.Captured == v && b.S.Captured  == v { return true }
-	if b.NE.Captured == v && b.E.Captured == v && b.SE.Captured == v { return true }
-
-	return false
-}
-
 func main() {
 	b := board{}
+/*
+	b.SetAt('a', 1, X); b.SetAt('b', 1, X); b.SetAt('c', 1, X); 
+	b.SetAt('d', 1, X); b.SetAt('e', 1, X); b.SetAt('f', 1, X); 
+	b.SetAt('d', 4, X); b.SetAt('e', 4, X); b.SetAt('f', 4, X); 
+	b.SetAt('g', 4, X); b.SetAt('h', 4, X); b.SetAt('i', 4, X); 
 
-	fmt.Println(b.GetAt('D', 4))
+	b.SetAt('g', 1, O); b.SetAt('h', 1, O); b.SetAt('i', 1, O); 
+	b.SetAt('g', 7, O); b.SetAt('h', 7, O); b.SetAt('i', 7, O); 
+
+	b.SetAt('a', 4, X); b.SetAt('c', 6, X); 
+
+	b.SetAt('b', 9, X); b.SetAt('c', 8, X); 
+	b.SetAt('c', 7, O); b.SetAt('a', 8, O); b.SetAt('a', 9, O); b.SetAt('c', 9, O); 
+
+	b.SetAt('d', 7, O); b.SetAt('d', 9, O); 
+*/
 
 	computer_move := position{}
 	for {
@@ -106,9 +108,9 @@ func main() {
 
 		computer_moves := FindAllMoves(&b, user_move)
 
-		fmt.Printf("Computer has %d moves: ", len(computer_moves))
-		for _, cmv := range computer_moves {
-			fmt.Printf("%c%d ", cmv.x, cmv.y)
+		fmt.Printf("Computer has %d moves\n", len(computer_moves))
+		for range computer_moves {
+			fmt.Printf("x")
 		}
 		fmt.Printf("\n")
 
@@ -118,10 +120,11 @@ func main() {
 			break
 		}
 
-		// No intelligence: just pick the first one
-		computer_move = computer_moves[0]
-		fmt.Printf("Computer played: %c%d\n", computer_move.x, computer_move.y)
+//		computer_move = FindBestMove(&b, computer_moves, O)
+		computer_move, computer_score := negamax(&b, O, user_move, /*5*/4, 52)
+
 		b.SetAt(computer_move.x, computer_move.y, O)
+		fmt.Printf("Computer played: %c%d. Score:%d\n", computer_move.x, computer_move.y, computer_score)
 
 		if IsGameWon(&b, O) {
 			DrawBoard(&b)
