@@ -272,3 +272,19 @@ func (b *board) SetAt(x byte, y int, value BoardValue) {
 		c.Fill(value)
 	}
 }
+
+func (b *board) SetImpl(s string, v BoardValue) {
+	for i := 0; i < len(s); i+=2 {
+		x := byte(s[i])
+		y := int(s[i+1] - '0')
+		b.SetAt(x,y,v)
+	}
+}
+
+func (b *board) SetX(s string) {
+	b.SetImpl(s, X)
+}
+
+func (b *board) SetO(s string) {
+	b.SetImpl(s, O)
+}

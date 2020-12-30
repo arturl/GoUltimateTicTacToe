@@ -58,7 +58,7 @@ func GetSmallCorner(b *board, prev position) (*corner, byte, int) {
 	case position{'c',3}, position{'f',3}, position{'i',3},
 		 position{'c',6}, position{'f',6}, position{'i',6},
 		 position{'c',9}, position{'f',9}, position{'i',9}:
-		return &b.SW, 6, 6
+		return &b.SE, 6, 6
 	}
 	panic(fmt.Sprintf("prev value bad: %c%d", prev.x, prev.y))
 }
@@ -92,7 +92,7 @@ func FindAllMoves(b *board, prev position) []position {
 		if b.E.Captured  == Empty { available_squares = append(available_squares, positionDelta{b.E,  6, 3}) }
 		if b.SW.Captured == Empty { available_squares = append(available_squares, positionDelta{b.SW, 0, 6}) }
 		if b.S.Captured  == Empty { available_squares = append(available_squares, positionDelta{b.S,  3, 6}) }
-		if b.SE.Captured == Empty { available_squares = append(available_squares, positionDelta{b.SW, 6, 6}) }
+		if b.SE.Captured == Empty { available_squares = append(available_squares, positionDelta{b.SE, 6, 6}) }
 	}
 
 	adjustPos := func(p position, xdelta byte, ydelta int) position {

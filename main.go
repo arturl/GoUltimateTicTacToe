@@ -53,22 +53,9 @@ type position struct {
 func main() {
 	b := board{}
 /*
-	b.SetAt('a', 1, X); b.SetAt('b', 1, X); b.SetAt('c', 1, X); 
-	b.SetAt('d', 1, X); b.SetAt('e', 1, X); b.SetAt('f', 1, X); 
-	b.SetAt('d', 4, X); b.SetAt('e', 4, X); b.SetAt('f', 4, X); 
-	b.SetAt('g', 4, X); b.SetAt('h', 4, X); b.SetAt('i', 4, X); 
-
-	b.SetAt('g', 1, O); b.SetAt('h', 1, O); b.SetAt('i', 1, O); 
-	b.SetAt('g', 7, O); b.SetAt('h', 7, O); b.SetAt('i', 7, O); 
-
-	b.SetAt('a', 4, X); b.SetAt('c', 6, X); 
-
-	b.SetAt('b', 9, X); b.SetAt('c', 8, X); 
-	b.SetAt('c', 7, O); b.SetAt('a', 8, O); b.SetAt('a', 9, O); b.SetAt('c', 9, O); 
-
-	b.SetAt('d', 7, O); b.SetAt('d', 9, O); 
+	b.SetX("a1b1c1d1e1f1d4e4f4c4a5g4h6i7")
+	b.SetO("g1h1i1a4b4c5h4a7b7c7d7e7f7g7h7")
 */
-
 	computer_move := position{}
 	for {
 		DrawBoard(&b)
@@ -109,6 +96,13 @@ func main() {
 		computer_moves := FindAllMoves(&b, user_move)
 
 		fmt.Printf("Computer has %d moves\n", len(computer_moves))
+/*
+		for _, mv := range computer_moves {
+			fmt.Printf("%c%d ", mv.x, mv.y)
+		}
+		fmt.Printf("\n")
+		return
+*/
 		for range computer_moves {
 			fmt.Printf("x")
 		}
