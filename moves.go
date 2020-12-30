@@ -5,8 +5,7 @@ import (
 )
 
 func IsValidMove(b *board, prev position, p position) (bool, string) {
-	if p.x < 'a' || p.x > 'i' || p.y < 1 || p.y > 9 { return false, "coordinates out of bounds" 
-	}
+	if p.x < 'a' || p.x > 'i' || p.y < 1 || p.y > 9 { return false, "coordinates out of bounds" }
 	if b.GetAt(p.x, p.y) != Empty { return false, "position already occupied" }
 	if prev.x != 0 {
 		prev_corner, _, _ := GetSmallCorner(b, prev)
@@ -71,6 +70,8 @@ type positionDelta struct {
 
 func FindAllMoves(b *board, prev position) []position {
 	output := []position{}
+
+	if IsGameWon(b, O) || IsGameWon(b, X) { return output }
 
 	var c *corner;
 	var xdelta byte;

@@ -52,11 +52,28 @@ type position struct {
 
 func main() {
 	b := board{}
+
+//	b.SetX("a1e1f1g1h1i1b2g4h4i4a5b5g8i8c9b8d9a3d7e3a8f9e8")
+//	b.SetO("b1a2c3a4b4d4e4f4c5a6c7i7c8i9a7b9b3a9b6g9")
 /*
-	b.SetX("a1b1c1d1e1f1d4e4f4c4a5g4h6i7")
-	b.SetO("g1h1i1a4b4c5h4a7b7c7d7e7f7g7h7")
+	b.SetX("b7")
+	b.SetO("h9")
+	b.SetX("c1")
+
+	DrawBoard(&b)
+
+	u := position{'c',1}
+	h_moves := FindAllMoves(&b, u)
+	fmt.Printf("Human has %d moves\n", len(h_moves))
+
+	for _, mv := range h_moves {
+		fmt.Printf("%c%d ", mv.x, mv.y)
+	}
+	fmt.Printf("\n")
+	return
 */
 	computer_move := position{}
+
 	for {
 		DrawBoard(&b)
 		valid := false;
@@ -115,7 +132,8 @@ func main() {
 		}
 
 //		computer_move = FindBestMove(&b, computer_moves, O)
-		computer_move, computer_score := negamax(&b, O, user_move, /*5*/4, 52)
+		var computer_score int
+		computer_move, computer_score = negamax(&b, O, user_move, 5/*6*/)
 
 		b.SetAt(computer_move.x, computer_move.y, O)
 		fmt.Printf("Computer played: %c%d. Score:%d\n", computer_move.x, computer_move.y, computer_score)
