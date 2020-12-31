@@ -258,6 +258,7 @@ func (c *corner) Fill(v BoardValue) {
 	c.W = v
 	c.C = v
 	c.E = v
+	c.OccupiedCount = 9
 }
 
 func (b *board) GetAt(x byte, y int) BoardValue {
@@ -270,6 +271,10 @@ func (b *board) SetAt(x byte, y int, value BoardValue) {
 	if c.IsOccupiedBy(value) {
 		c.Captured = value
 		c.Fill(value)
+	}else{
+		c.OccupiedCount++;
+		// Needed if SetAt applied multiple times on the same position
+		if c.OccupiedCount > 9 { c.OccupiedCount = 9 }
 	}
 }
 

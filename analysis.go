@@ -161,18 +161,3 @@ func negamax_worker(b* board, v BoardValue, prev position, depth int, log bool, 
 	if depth >= debug_level { fmt.Printf("[%d] return %d, %c%d\n", depth, value, best_move.x, best_move.y) }
 	return value, best_move
 }
-
-func FindBestMove(b *board, ps []position, v BoardValue) position {
-	best_score := -999
-	best_move := 0
-	for i, mv := range ps {
-		board_copy := b.clone()
-		board_copy.SetAt(mv.x, mv.y, v)
-		score := eval(&board_copy, v, 0)
-		if score > best_score {
-			best_score = score
-			best_move = i
-		}
-	}
-	return ps[best_move]
-}

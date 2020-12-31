@@ -9,8 +9,8 @@ func IsValidMove(b *board, prev position, p position) (bool, string) {
 	if b.GetAt(p.x, p.y) != Empty { return false, "position already occupied" }
 	if prev.x != 0 {
 		prev_corner, _, _ := GetSmallCorner(b, prev)
-		if prev_corner.Captured != Empty {
-			// The square is captured, so all moves are possible
+		if prev_corner.OccupiedCount == 9 {
+			// The square is fully occupied, so all moves are possible
 			return true, ""
 		}
 		this_corner := b.GetCorner(p.x, p.y)
@@ -68,6 +68,18 @@ type positionDelta struct {
 	ydelta int
 }
 
+func adjustPos(p position, xdelta byte, ydelta int) position {
+	return position{ p.x + xdelta, p.y + ydelta }
+}
+
+func AppendToOutput(v BoardValue, x byte, y int, c positionDelta, output []position) []position {
+	if v == Empty {
+		pos := position{x, y}
+		output = append(output, adjustPos(pos, c.xdelta, c.ydelta))
+	}
+	return output
+}
+
 func FindAllMoves(b *board, prev position) []position {
 	output := []position{}
 
@@ -83,60 +95,31 @@ func FindAllMoves(b *board, prev position) []position {
 
 	available_squares := []positionDelta{pd}
 
-	if c.Captured != Empty {
+	if c.OccupiedCount == 9 {
 		// The square is captured, so moves to other squares are possible
-		if b.NW.Captured == Empty { available_squares = append(available_squares, positionDelta{b.NW, 0, 0}) }
-		if b.N.Captured  == Empty { available_squares = append(available_squares, positionDelta{b.N,  3, 0}) }
-		if b.NE.Captured == Empty { available_squares = append(available_squares, positionDelta{b.NE, 6, 0}) }
-		if b.W.Captured  == Empty { available_squares = append(available_squares, positionDelta{b.W,  0, 3}) }
-		if b.C.Captured  == Empty { available_squares = append(available_squares, positionDelta{b.C,  3, 3}) }
-		if b.E.Captured  == Empty { available_squares = append(available_squares, positionDelta{b.E,  6, 3}) }
-		if b.SW.Captured == Empty { available_squares = append(available_squares, positionDelta{b.SW, 0, 6}) }
-		if b.S.Captured  == Empty { available_squares = append(available_squares, positionDelta{b.S,  3, 6}) }
-		if b.SE.Captured == Empty { available_squares = append(available_squares, positionDelta{b.SE, 6, 6}) }
-	}
-
-	adjustPos := func(p position, xdelta byte, ydelta int) position {
-		return position{ p.x + xdelta, p.y + ydelta }
+		if b.NW.OccupiedCount < 9 { available_squares = append(available_squares, positionDelta{b.NW, 0, 0}) }
+		if b.N.OccupiedCount  < 9 { available_squares = append(available_squares, positionDelta{b.N,  3, 0}) }
+		if b.NE.OccupiedCount < 9 { available_squares = append(available_squares, positionDelta{b.NE, 6, 0}) }
+		if b.W.OccupiedCount  < 9 { available_squares = append(available_squares, positionDelta{b.W,  0, 3}) }
+		if b.C.OccupiedCount  < 9 { available_squares = append(available_squares, positionDelta{b.C,  3, 3}) }
+		if b.E.OccupiedCount  < 9 { available_squares = append(available_squares, positionDelta{b.E,  6, 3}) }
+		if b.SW.OccupiedCount < 9 { available_squares = append(available_squares, positionDelta{b.SW, 0, 6}) }
+		if b.S.OccupiedCount  < 9 { available_squares = append(available_squares, positionDelta{b.S,  3, 6}) }
+		if b.SE.OccupiedCount < 9 { available_squares = append(available_squares, positionDelta{b.SE, 6, 6}) }
 	}
 
 	for _, c := range available_squares {
-		if c.NW == Empty {
-			pos := position{'a',1}
-			output = append(output, adjustPos(pos, c.xdelta, c.ydelta))
-		}
-		if c.N == Empty {
-			pos := position{'b',1}
-			output = append(output, adjustPos(pos, c.xdelta, c.ydelta))
-		}
-		if c.NE == Empty {
-			pos := position{'c',1}
-			output = append(output, adjustPos(pos, c.xdelta, c.ydelta))
-		}
-		if c.W == Empty {
-			pos := position{'a',2}
-			output = append(output, adjustPos(pos, c.xdelta, c.ydelta))
-		}
-		if c.C == Empty {
-			pos := position{'b',2}
-			output = append(output, adjustPos(pos, c.xdelta, c.ydelta))
-		}
-		if c.E == Empty {
-			pos := position{'c',2}
-			output = append(output, adjustPos(pos, c.xdelta, c.ydelta))
-		}
-		if c.SW == Empty {
-			pos := position{'a',3}
-			output = append(output, adjustPos(pos, c.xdelta, c.ydelta))
-		}
-		if c.S == Empty {
-			pos := position{'b',3}
-			output = append(output, adjustPos(pos, c.xdelta, c.ydelta))
-		}
-		if c.SE == Empty {
-			pos := position{'c',3}
-			output = append(output, adjustPos(pos, c.xdelta, c.ydelta))
-		}
+
+		output = AppendToOutput(c.NW, 'a', 1, c, output)
+		output = AppendToOutput(c.N,  'b', 1, c, output)
+		output = AppendToOutput(c.NE, 'c', 1, c, output)
+		output = AppendToOutput(c.W,  'a', 2, c, output)
+		output = AppendToOutput(c.C,  'b', 2, c, output)
+		output = AppendToOutput(c.E,  'c', 2, c, output)
+		output = AppendToOutput(c.SW, 'a', 3, c, output)
+		output = AppendToOutput(c.S,  'b', 3, c, output)
+		output = AppendToOutput(c.SE, 'c', 3, c, output)
 	}
+
 	return output
 }

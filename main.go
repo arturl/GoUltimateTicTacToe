@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"unicode"
 	"strconv"
+	"time"
 )
 
 type BoardValue int
@@ -15,7 +16,8 @@ const(
 )
 
 type corner struct {
-	Captured BoardValue
+	OccupiedCount int   // how many positions are fully occupied, from 0 to 9
+	Captured BoardValue // if fully occupied by the same player
 	NW BoardValue
 	N  BoardValue
 	NE BoardValue
@@ -53,25 +55,9 @@ type position struct {
 func main() {
 	b := board{}
 
-//	b.SetX("a1e1f1g1h1i1b2g4h4i4a5b5g8i8c9b8d9a3d7e3a8f9e8")
-//	b.SetO("b1a2c3a4b4d4e4f4c5a6c7i7c8i9a7b9b3a9b6g9")
-/*
-	b.SetX("b7")
-	b.SetO("h9")
-	b.SetX("c1")
+//	b.SetX("a1e1f1g1h1i1b2g4h4i4a5b5g8d1")
+//	b.SetO("b1a2c3a4b4d4e4f4c5a6c7i7c8")
 
-	DrawBoard(&b)
-
-	u := position{'c',1}
-	h_moves := FindAllMoves(&b, u)
-	fmt.Printf("Human has %d moves\n", len(h_moves))
-
-	for _, mv := range h_moves {
-		fmt.Printf("%c%d ", mv.x, mv.y)
-	}
-	fmt.Printf("\n")
-	return
-*/
 	computer_move := position{}
 
 	for {
@@ -80,7 +66,7 @@ func main() {
 		user_move := position{}
 		for !valid {
 			// Get user's move
-			fmt.Printf("Enter you move (or 'q' to quit the game):")
+			fmt.Printf("Enter your move (or 'q' to quit the game):")
 			user_input := ""
 			fmt.Scanln(&user_input)
 			if user_input == "q" { return }
@@ -101,17 +87,15 @@ func main() {
 		}
 
 		b.SetAt(user_move.x, user_move.y, X)
+		DrawBoard(&b)
 
 		if IsGameWon(&b, X) {
-			DrawBoard(&b)
 			fmt.Printf("Human won. Game over\n")
 			break
 		}
 
 		// Get computer move
-
 		computer_moves := FindAllMoves(&b, user_move)
-
 		fmt.Printf("Computer has %d moves\n", len(computer_moves))
 /*
 		for _, mv := range computer_moves {
@@ -131,12 +115,15 @@ func main() {
 			break
 		}
 
-//		computer_move = FindBestMove(&b, computer_moves, O)
+		start := time.Now()
+
 		var computer_score int
 		computer_move, computer_score = negamax(&b, O, user_move, 5/*6*/)
 
+		duration := time.Since(start)
+
 		b.SetAt(computer_move.x, computer_move.y, O)
-		fmt.Printf("Computer played: %c%d. Score:%d\n", computer_move.x, computer_move.y, computer_score)
+		fmt.Printf("Computer played: %c%d. Score:%d. Time elapsed:%v\n", computer_move.x, computer_move.y, computer_score, duration)
 
 		if IsGameWon(&b, O) {
 			DrawBoard(&b)
