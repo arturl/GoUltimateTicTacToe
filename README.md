@@ -14,4 +14,6 @@ Each move is a two-character string, a letter 'a' to 'i' followed by a number 1 
 
 Follow the rules of the game (see Wikipedia link above)
 
+Have fun!
+
 ![](docs/game.png)
